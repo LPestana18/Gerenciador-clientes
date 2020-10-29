@@ -4,41 +4,42 @@
   <form (submit)="onAdicionarCliente(clienteForm)" #clienteForm="ngForm">
     <mat-form-field>
       <input
-      type="text"
-      matInput
-      placeholder="Nome"
-      name="nome"
-      ngModel
-      required
-      minlength="3"
-      #nome="ngModel"
+        type="text"
+        matInput
+        placeholder="Nome"
+        name="nome"
+        ngModel
+        required
+        minlength="4"
+        #nome="ngModel"
       />
       <mat-error *ngIf="nome.invalid">Digite um nome válido</mat-error>
     </mat-form-field>
 
     <mat-form-field>
       <input
-      type="text"
-      matInput
-      name="fone"
-      placeholder="Fone"
-      ngModel
-      required
-      #fone="ngModel"/>
+        type="text"
+        matInput
+        name="fone"
+        placeholder="Fone"
+        ngModel
+        required
+        #fone="ngModel"
+      />
       <mat-error *ngIf="fone.invalid">Digite um telefone válido</mat-error>
     </mat-form-field>
 
     <mat-form-field>
       <input
-      type="text"
-      matInput
-      placeholder="Email"
-      ngModel
-      name="email"
-      required
-      #email="ngModel"/>
+        type="text"
+        matInput
+        placeholder="Email"
+        ngModel
+        name="email"
+        required
+        #email="ngModel"
+      />
       <mat-error *ngIf="email.invalid">Digite um email válido</mat-error>
-      
     </mat-form-field>
 
     <button mat-raised-button color="primary">Inserir Cliente</button>

@@ -39,8 +39,8 @@ export class ClienteService {
       console.log(dados.mensagem)
       this.clientes.push(cliente);
       this.listaClientesAtualizada.next([...this.clientes]);
-    })
-    
+    });
+
     //this.clientes.push(cliente);
 
     // Enviando a mensagem de que aconteceu modificação

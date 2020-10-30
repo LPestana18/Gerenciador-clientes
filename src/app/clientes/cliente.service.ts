@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Cliente } from './cliente.model';
+import { HttpClient } from '@angular/common/http'
 
 @Injectable({
   providedIn: 'root'
@@ -8,16 +9,22 @@ import { Cliente } from './cliente.model';
 
 export class ClienteService {
 
-
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   private clientes : Cliente [] = [];
 
-  private listaClientesAtualizada = new Subject<Cliente[]>();
 
-  getClientes(): Cliente[]  {
-    return [...this.clientes];
+  getClientes(): void {
+    this.httpClient.get<{ mensagem : string, clientes: Cliente[]}>(
+      'http://localhost:3000/api/clientes'
+    ).subscribe((dados) => {
+      this.clientes = dados.clientes
+      this.listaClientesAtualizada.next([...this.clientes])
+    })
+    //return [...this.clientes];
   }
+
+  private listaClientesAtualizada = new Subject<Cliente[]>();
 
   adicionarCliente(nome: string, fone: string, email: string): void {
     const cliente: Cliente = {
@@ -25,11 +32,20 @@ export class ClienteService {
       fone: fone,
       email: email
     };
-    this.clientes.push(cliente);
+    this.httpClient.post<{mensagem: string}>(
+      'http://localhost:3000/api/clientes',
+      cliente
+    ).subscribe((dados) =>{
+      console.log(dados.mensagem)
+      this.clientes.push(cliente);
+      this.listaClientesAtualizada.next([...this.clientes]);
+    })
+    
+    //this.clientes.push(cliente);
 
     // Enviando a mensagem de que aconteceu modificação
     // no objeto a ser observado a lista de clientes
-    this.listaClientesAtualizada.next([...this.clientes]);
+    //this.listaClientesAtualizada.next([...this.clientes]);
   }
 
   /**

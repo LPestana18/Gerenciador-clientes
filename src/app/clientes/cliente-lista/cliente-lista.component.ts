@@ -16,12 +16,10 @@ export class ClienteListaComponent implements OnInit, OnDestroy {
   constructor(public clientesService: ClienteService) {}
 
   ngOnInit(): void {
-    this.clientes = this.clientesService.getClientes();
-
+    this.clientesService.getClientes();
     this.clientesSubscription = this.clientesService
       .getListaClientesAtualizadaOservable()
-      .subscribe(
-        (clientes: Cliente[]) => {
+      .subscribe((clientes: Cliente[]) => {
           this.clientes = clientes;
         });
   }

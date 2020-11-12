@@ -1,16 +1,16 @@
 <h2>Inserção de clientes</h2>
 
 <mat-card>
-  <form (submit)="onAdicionarCliente(clienteForm)" #clienteForm="ngForm">
+  <form (submit)="onSalvarCliente(clienteForm)" #clienteForm="ngForm">
     <mat-form-field>
       <input
         type="text"
         matInput
         placeholder="Nome"
         name="nome"
-        ngModel
         required
         minlength="4"
+        [ngModel]="cliente?.nome"
         #nome="ngModel"
       />
       <mat-error *ngIf="nome.invalid">Digite um nome válido</mat-error>
@@ -22,8 +22,8 @@
         matInput
         name="fone"
         placeholder="Fone"
-        ngModel
         required
+        [ngModel]="cliente?.fone"
         #fone="ngModel"
       />
       <mat-error *ngIf="fone.invalid">Digite um telefone válido</mat-error>
@@ -34,14 +34,14 @@
         type="text"
         matInput
         placeholder="Email"
-        ngModel
         name="email"
         required
+        [ngModel]="cliente?.email"
         #email="ngModel"
       />
       <mat-error *ngIf="email.invalid">Digite um email válido</mat-error>
     </mat-form-field>
 
-    <button mat-raised-button color="primary">Inserir Cliente</button>
+    <button mat-raised-button color="accent">Salvar</button>
   </form>
 </mat-card>

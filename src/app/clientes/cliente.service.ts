@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Cliente } from './cliente.model';
 import { HttpClient } from '@angular/common/http'
+import { identifierModuleUrl } from '@angular/compiler';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +17,21 @@ export class ClienteService {
 
 
   getClientes(): void {
-    this.httpClient.get<{ mensagem : string, clientes: Cliente[]}>(
+    this.httpClient.get<{ mensagem : string, clientes: any}>(
       'http://localhost:3000/api/clientes'
-    ).subscribe((dados) => {
-      this.clientes = dados.clientes
+    )
+    .pipe(map((dados)=> {
+      return dados.clientes.map(cli => {
+        return {
+          id: cli.id,
+          nome: cli.nome,
+          fone: cli.fone,
+          email: cli.email
+        }
+      })
+    }))
+    .subscribe((clientes) => {
+      this.clientes = clientes;
       this.listaClientesAtualizada.next([...this.clientes])
     })
     //return [...this.clientes];
@@ -28,24 +41,33 @@ export class ClienteService {
 
   adicionarCliente(nome: string, fone: string, email: string): void {
     const cliente: Cliente = {
+      id: null,
       nome: nome,
       fone: fone,
       email: email
     };
-    this.httpClient.post<{mensagem: string}>(
-      'http://localhost:3000/api/clientes',
-      cliente
-    ).subscribe((dados) => {
-      console.log(dados.mensagem)
-      this.clientes.push(cliente);
-      this.listaClientesAtualizada.next([...this.clientes]);
-    });
+    this.httpClient.post<{mensagem: string, id: string}>('http://localhost:3000/api/clientes', cliente).subscribe(
+      (dados) => {
+        cliente.id = dados.id;
+        this.clientes.push(cliente);
+        this.listaClientesAtualizada.next([...this.clientes]);
+      }
+    )
 
     //this.clientes.push(cliente);
 
     // Enviando a mensagem de que aconteceu modificação
     // no objeto a ser observado a lista de clientes
     //this.listaClientesAtualizada.next([...this.clientes]);
+  }
+
+  removerCliente(id: string): void {
+    this.httpClient.delete(`http://localhost:3000/api/clientes/${id}`).subscribe(() => {
+      this.clientes = this.clientes.filter((cli) => {
+        return cli.id !== id
+      });
+      this.listaClientesAtualizada.next([...this.clientes]);
+    })
   }
 
   /**

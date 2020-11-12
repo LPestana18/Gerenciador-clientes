@@ -4,10 +4,7 @@ const bodyParser = require ('body-parser');
 const mongoose = require('mongoose');
 const Cliente = require ('./models/cliente');
 
-
-app.use(express.json());
-
-mongoose.connect('mongodb+srv://cliente:cliente12345@cluster0.jzkvl.mongodb.net/app-mean?retryWrites=true&w=majority', { useNewUrlParser: true,
+mongoose.connect('mongodb+srv://lucas:nw9i8Dmd10dHRXdz@cluster0.5m8t5.mongodb.net/cliente?retryWrites=true&w=majority', { useNewUrlParser: true,
               useUnifiedTopology: true
             })
 .then(() => {
@@ -17,28 +14,8 @@ mongoose.connect('mongodb+srv://cliente:cliente12345@cluster0.jzkvl.mongodb.net/
   console.log(error);
 });
 
-/*
-const clientes = [
-  {
-    id: '1',
-    nome: 'Jose',
-    fone: '11223344',
-    email: 'jose@email.com'
-  },
-  {
-    id: '2',
-    nome: 'Maria',
-    fone: '2119992233',
-    email: 'maria@email.com'
-  },
-  {
-    id: '3',
-    nome: 'Afonso',
-    fone: '11998877',
-    email: 'afonso@email.com'
-  }
-];
-*/
+app.use(express.json());
+
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -50,8 +27,8 @@ app.use((req, res, next) => {
 
 //http://localhost:3000/api/clientes
 app.get('/api/clientes', (req, res, next) => {
-  Cliente.find().then(
-    documents =>{
+  Cliente.find().then(documents =>{
+      console.log(documents);
       res.status(200).json(
         {
         mensagem: "Tudo OK",
@@ -67,12 +44,23 @@ app.post('/api/clientes', (req, res, next) => {
     nome: req.body.nome,
     fone: req.body.fone,
     email: req.body.email
-  });
-
-  cliente.save();
-
-  console.log(cliente);
-  res.status(201).json({mensagem: 'Cliente inserido'})
+  })
+  cliente.save().
+  then(clienteInserido => {
+    res.status(201).json({
+      mensagem: 'Cliente inserido',
+      id: clienteInserido._id
+    })
+  })
 });
+
+//DELETE /api/clientes/eii1349fewajçf1
+app.delete('/api/clientes/:id', (req, res, next) => {
+  //console.log("Params" + JSON.stringify(req.params));
+  Cliente.deleteOne({_id: req.params.id}).then((resultado) => {
+    console.log(resultado);
+    res.status(200).json({mensagem: "Cliente removido"});
+  })
+})
 
 module.exports = app;

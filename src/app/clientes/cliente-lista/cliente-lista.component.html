@@ -1,5 +1,7 @@
 <mat-accordion>
 
+  <mat-spinner *ngIf="estaCarregando"></mat-spinner>
+  <mat-accordion *ngIf="clientes.length > 0 && !estaCarregando">
   <mat-expansion-panel *ngFor="let cliente of clientes">
 
     <mat-expansion-panel-header>
@@ -13,9 +15,8 @@
       <button mat-button color="warn" (click)="onDelete(cliente.id)">REMOVER</button>
       </mat-action-row>
   </mat-expansion-panel>
-
 </mat-accordion>
 
-<p *ngIf="clientes.length <= 0">
+<p *ngIf="clientes.length <= 0 && !estaCarregando">
   Nenhum cliente cadastrado!
 </p>

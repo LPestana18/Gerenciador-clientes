@@ -4,6 +4,7 @@ import { Cliente } from './cliente.model';
 import { HttpClient } from '@angular/common/http'
 import { identifierModuleUrl } from '@angular/compiler';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ import { map } from 'rxjs/operators';
 
 export class ClienteService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient,
+    private router: Router) { }
 
   private clientes : Cliente [] = [];
 
@@ -46,11 +48,13 @@ export class ClienteService {
       fone: fone,
       email: email
     };
-    this.httpClient.post<{mensagem: string, id: string}>('http://localhost:3000/api/clientes', cliente).subscribe(
-      (dados) => {
-        cliente.id = dados.id;
-        this.clientes.push(cliente);
-        this.listaClientesAtualizada.next([...this.clientes]);
+    this.httpClient.post<{mensagem: string, id: string}> ('http://localhost:3000/api/clientes',
+    cliente).subscribe(
+    (dados) => {
+      cliente.id = dados.id;
+      this.clientes.push(cliente)
+      this.listaClientesAtualizada.next([...this.clientes]);
+      this.router.navigate(['/']);
       }
     )
 
@@ -63,10 +67,10 @@ export class ClienteService {
 
   removerCliente(id: string): void {
     this.httpClient.delete(`http://localhost:3000/api/clientes/${id}`).subscribe(() => {
-      this.clientes = this.clientes.filter((cli) => {
-        return cli.id !== id
-      });
-      this.listaClientesAtualizada.next([...this.clientes]);
+    this.clientes = this.clientes.filter((cli) => {
+      return cli.id !== id
+    });
+    this.listaClientesAtualizada.next([...this.clientes]);
     })
   }
 
@@ -79,6 +83,7 @@ export class ClienteService {
       copia[indice] = cliente;
       this.clientes = copia;
       this.listaClientesAtualizada.next([...this.clientes]);
+      this.router.navigate(['/'])
     }))
   };
 
